@@ -24,7 +24,7 @@
     "@angular/fire": "^20.0.1",
     "data-provider-core": "^1.1.4",
     "rxjs": "^7.5.0",
-    "@positional_advantage_coder/id-generator": "^1.0.3"
+    "@positional_advantage_coder/id-generator": "^1.0.6"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^20.3.7",
@@ -33,6 +33,6 @@
     "@angular/fire": "^20.0.1",
     "rxjs": "^7.5.0",
     "data-provider-core": "^1.1.4",
-    "@positional_advantage_coder/id-generator": "^1.0.3"
+    "@positional_advantage_coder/id-generator": "^1.0.6"
   }
 }
