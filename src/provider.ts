@@ -6,6 +6,7 @@ import {
     EntityConverter,
     EntityConverterConfig
 } from 'data-provider-core';
+import {IdGenerator} from "@positional_advantage_coder/id-generator";
 
 // This token is how the DataProvider implementation will get the map of converters.
 export const ENTITY_CONVERTER_MAP_TOKEN = new InjectionToken<Map<string, EntityConverter<any, Entity<any>>>>('EntityConverterMap');
@@ -33,6 +34,13 @@ export function provideEntityConverters(configs: EntityConverterConfig[]): Provi
             deps: [ENTITY_CONVERTER_CONFIGS_TOKEN],
         },
     ];
+}
+
+export function provideIdGenerator(implementation: Type<IdGenerator>): Provider {
+    return {
+        provide: IdGenerator,
+        useClass: implementation
+    }
 }
 
 /**

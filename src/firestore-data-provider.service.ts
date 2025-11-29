@@ -4,14 +4,16 @@ import {
     collection,
     collectionData,
     doc,
-    docData
+    docData,
+    setDoc
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import {catchError, defer, from, Observable, of} from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DataProvider, Entity, EntityConverter } from 'data-provider-core';
 import { ENTITY_CONVERTER_MAP_TOKEN } from './provider';
 import { CollectionReference, DocumentData, Query, query } from "@angular/fire/firestore";
+import { IdGenerator } from "@positional_advantage_coder/id-generator"
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +21,7 @@ import { CollectionReference, DocumentData, Query, query } from "@angular/fire/f
 export class FirestoreDataProviderService implements DataProvider {
     constructor(
         private firestore: Firestore,
+        public idGenerator: IdGenerator,
         @Inject(ENTITY_CONVERTER_MAP_TOKEN) public converterMap: Map<string, EntityConverter<any, any>>
     ) { }
 
@@ -27,6 +30,14 @@ export class FirestoreDataProviderService implements DataProvider {
         return docData(docRef, { idField: 'id' }).pipe(
             map((plainObject: any) => this.convertIntoEntity(plainObject))
         );
+    }
+
+    public createEntity<T extends Entity<string>>(path: string, entityData: Omit<T, 'id'>): Observable<T | undefined> {
+        const completeEntity: T = { ...entityData, id: this.idGenerator.generateId() } as T;
+
+        return defer(() => from(
+            setDoc(doc(this.firestore, `path/${completeEntity.id}`), completeEntity)
+        ).pipe(map(() => completeEntity),  catchError(() => of(undefined))))
     }
 
     public listenToCollectionChanges<T extends Entity<string>>(path: string): Observable<T[]> {
