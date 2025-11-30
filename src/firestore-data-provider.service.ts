@@ -32,11 +32,11 @@ export class FirestoreDataProviderService implements DataProvider {
         );
     }
 
-    public createEntity<T extends Entity<string>>(path: string, entityData: Omit<T, 'id'>): Observable<T | undefined> {
+    public createEntity<T extends Entity<string>>(collectionPath: string, entityData: Omit<T, 'id'>): Observable<T | undefined> {
         const completeEntity: T = { ...entityData, id: this.idGenerator.generateId() } as T;
 
         return defer(() => from(
-            setDoc(doc(this.firestore, `path/${completeEntity.id}`), completeEntity)
+            setDoc(doc(this.firestore, `${collectionPath}/${completeEntity.id}`), completeEntity)
         ).pipe(map(() => completeEntity),  catchError(() => of(undefined))))
     }
 
