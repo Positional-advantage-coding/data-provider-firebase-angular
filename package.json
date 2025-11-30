@@ -20,19 +20,19 @@
   "author": "positional_advantage_coder",
   "license": "ISC",
   "peerDependencies": {
-    "@angular/core": "^20.3.7",
+    "@angular/core": "^21.0.1",
     "@angular/fire": "^20.0.1",
-    "data-provider-core": "^1.1.9",
+    "data-provider-core": "^1.1.10",
     "rxjs": "^7.5.0",
     "@positional_advantage_coder/id-generator": "^1.0.8"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^20.3.7",
     "typescript": "^5.9.3",
-    "@angular/core": "^20.3.7",
+    "@angular/core": "^21.0.1",
     "@angular/fire": "^20.0.1",
     "rxjs": "^7.5.0",
-    "data-provider-core": "^1.1.9",
+    "data-provider-core": "^1.1.10",
     "@positional_advantage_coder/id-generator": "^1.0.8"
   }
 }
