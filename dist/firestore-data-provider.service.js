@@ -54,9 +54,9 @@ class FirestoreDataProviderService {
         const docRef = (0, firestore_1.doc)(this.firestore, path);
         return (0, firestore_1.docData)(docRef, { idField: 'id' }).pipe((0, operators_1.map)((plainObject) => this.convertIntoEntity(plainObject)));
     }
-    createEntity(path, entityData) {
+    createEntity(collectionPath, entityData) {
         const completeEntity = { ...entityData, id: this.idGenerator.generateId() };
-        return (0, rxjs_1.defer)(() => (0, rxjs_1.from)((0, firestore_1.setDoc)((0, firestore_1.doc)(this.firestore, `path/${completeEntity.id}`), completeEntity)).pipe((0, operators_1.map)(() => completeEntity), (0, rxjs_1.catchError)(() => (0, rxjs_1.of)(undefined))));
+        return (0, rxjs_1.defer)(() => (0, rxjs_1.from)((0, firestore_1.setDoc)((0, firestore_1.doc)(this.firestore, `${collectionPath}/${completeEntity.id}`), completeEntity)).pipe((0, operators_1.map)(() => completeEntity), (0, rxjs_1.catchError)(() => (0, rxjs_1.of)(undefined))));
     }
     listenToCollectionChanges(path) {
         const collectionRef = (0, firestore_1.collection)(this.firestore, path);
@@ -80,9 +80,9 @@ class FirestoreDataProviderService {
     }
 }
 exports.FirestoreDataProviderService = FirestoreDataProviderService;
-FirestoreDataProviderService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.14", ngImport: i0, type: FirestoreDataProviderService, deps: [{ token: i1.Firestore }, { token: i2.IdGenerator }, { token: provider_1.ENTITY_CONVERTER_MAP_TOKEN }], target: i0.ɵɵFactoryTarget.Injectable });
-FirestoreDataProviderService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.14", ngImport: i0, type: FirestoreDataProviderService, providedIn: 'root' });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.14", ngImport: i0, type: FirestoreDataProviderService, decorators: [{
+FirestoreDataProviderService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.0.1", ngImport: i0, type: FirestoreDataProviderService, deps: [{ token: i1.Firestore }, { token: i2.IdGenerator }, { token: provider_1.ENTITY_CONVERTER_MAP_TOKEN }], target: i0.ɵɵFactoryTarget.Injectable });
+FirestoreDataProviderService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "21.0.1", ngImport: i0, type: FirestoreDataProviderService, providedIn: 'root' });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.0.1", ngImport: i0, type: FirestoreDataProviderService, decorators: [{
             type: core_1.Injectable,
             args: [{
                     providedIn: 'root'
