@@ -22,7 +22,7 @@
   "peerDependencies": {
     "@angular/core": "^21.0.1",
     "@angular/fire": "^20.0.1",
-    "data-provider-core": "^1.1.12",
+    "data-provider-core": "^1.1.14",
     "rxjs": "^7.5.0",
     "@positional_advantage_coder/id-generator": "^1.0.8"
   },

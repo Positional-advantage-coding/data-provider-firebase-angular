@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {
     Firestore,
     collection,
@@ -8,12 +8,12 @@ import {
     setDoc
 } from '@angular/fire/firestore';
 import {catchError, defer, from, Observable, of} from 'rxjs';
-import { map } from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
-import { DataProvider, Entity, EntityConverter } from 'data-provider-core';
-import { ENTITY_CONVERTER_MAP_TOKEN } from './provider';
-import { CollectionReference, DocumentData, Query, query } from "@angular/fire/firestore";
-import { IdGenerator } from "@positional_advantage_coder/id-generator"
+import {DataProvider, Entity, EntityConverter} from 'data-provider-core';
+import {ENTITY_CONVERTER_MAP_TOKEN} from './provider';
+import {CollectionReference, DocumentData, Query, query} from "@angular/fire/firestore";
+import {IdGenerator} from "@positional_advantage_coder/id-generator"
 
 @Injectable({
     providedIn: 'root'
@@ -23,28 +23,33 @@ export class FirestoreDataProviderService implements DataProvider {
         private firestore: Firestore,
         public idGenerator: IdGenerator,
         @Inject(ENTITY_CONVERTER_MAP_TOKEN) public converterMap: Map<string, EntityConverter<any, any>>
-    ) { }
+    ) {
+    }
 
     public getEntity<T extends Entity<string>>(path: string): Observable<T | undefined> {
         const docRef = doc(this.firestore, path);
-        return docData(docRef, { idField: 'id' }).pipe(
+        return docData(docRef, {idField: 'id'}).pipe(
             map((plainObject: any) => this.convertIntoEntity(plainObject))
         );
     }
 
-    public createEntity<T extends Entity<string>>(collectionPath: string, entityData: Omit<T, 'id'>): Observable<T | undefined> {
-        const completeEntity: T = { ...entityData, id: this.idGenerator.generateId() } as T;
+    public createEntity<T extends Entity<string>>(collectionPath: string, entityTypeKey: string, entityData: Omit<T, 'id' | 'typeKey'>): Observable<T | undefined> {
+        const completeEntity = this.transformEntityDataIntoEntity(entityTypeKey, entityData);
+
+        if (!completeEntity) {
+            return of(undefined);
+        }
 
         return defer(() => from(
             setDoc(doc(this.firestore, `${collectionPath}/${completeEntity.id}`), completeEntity)
-        ).pipe(map(() => completeEntity),  catchError(() => of(undefined))))
+        ).pipe(map(() => completeEntity), catchError(() => of(undefined))))
     }
 
     public listenToCollectionChanges<T extends Entity<string>>(path: string): Observable<T[]> {
         const collectionRef: CollectionReference = collection(this.firestore, path);
         const q: Query = query(collectionRef);
 
-        return collectionData(q, { idField: 'id' }).pipe(
+        return collectionData(q, {idField: 'id'}).pipe(
             map((plainObjects: DocumentData[]) => {
                 return plainObjects
                     .map(obj => this.convertIntoEntity<T>(obj))
@@ -66,5 +71,21 @@ export class FirestoreDataProviderService implements DataProvider {
 
         console.warn(`No converter registered for typeKey: "${rawObject.typeKey}"`);
         return undefined;
+    }
+
+    private transformEntityDataIntoEntity<T extends Entity<string>>(entityTypeKey: string, entityData: Omit<T, 'id' | 'typeKey'>): T | undefined {
+        const correspondingConverter = this.converterMap.get(entityTypeKey) as EntityConverter<string, T>;
+
+        if (!correspondingConverter) {
+            return undefined;
+        }
+
+        const entityWithoutId = correspondingConverter.createDraft(entityData);
+
+        if (!entityWithoutId) {
+            return undefined;
+        }
+
+        return {...entityWithoutId, id: this.idGenerator.generateId()} as T;
     }
 }
