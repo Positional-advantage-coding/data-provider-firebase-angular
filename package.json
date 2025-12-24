@@ -1,6 +1,6 @@
 {
   "name": "data-provider-firebase-angular",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Adapter between @data-provider-core and firebase with angular",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
