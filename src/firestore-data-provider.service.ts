@@ -5,7 +5,7 @@ import {
     collectionData,
     doc,
     docData,
-    setDoc
+    setDoc, updateDoc
 } from '@angular/fire/firestore';
 import {catchError, defer, from, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -43,6 +43,15 @@ export class FirestoreDataProviderService implements DataProvider {
         return defer(() => from(
             setDoc(doc(this.firestore, `${collectionPath}/${completeEntity.id}`), completeEntity)
         ).pipe(map(() => completeEntity), catchError(() => of(undefined))))
+    }
+
+    public updateEntity<T extends Entity<string>>(path: string, entityId: string, entityData: Partial<Omit<T, "id" | "typeKey">>): Observable<T | undefined> {
+        return defer(() => from(
+            updateDoc(doc(this.firestore, `${path}/${entityId}`), entityData)
+        ).pipe(
+            map((plainObject: any) => this.convertIntoEntity(plainObject) as T),
+            catchError(() => of(undefined))
+        ))
     }
 
     public listenToCollectionChanges<T extends Entity<string>>(path: string): Observable<T[]> {

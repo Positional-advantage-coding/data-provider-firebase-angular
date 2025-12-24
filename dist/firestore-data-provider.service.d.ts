@@ -9,9 +9,10 @@ export declare class FirestoreDataProviderService implements DataProvider {
     converterMap: Map<string, EntityConverter<any, any>>;
     constructor(firestore: Firestore, idGenerator: IdGenerator, converterMap: Map<string, EntityConverter<any, any>>);
     getEntity<T extends Entity<string>>(path: string): Observable<T | undefined>;
-    createEntity<T extends Entity<string>>(collectionPath: string, entityData: Omit<T, 'id'>): Observable<T | undefined>;
+    createEntity<T extends Entity<string>>(collectionPath: string, entityTypeKey: string, entityData: Omit<T, 'id' | 'typeKey'>): Observable<T | undefined>;
     listenToCollectionChanges<T extends Entity<string>>(path: string): Observable<T[]>;
     convertIntoEntity<T extends Entity<string>>(rawObject: any): T | undefined;
+    private transformEntityDataIntoEntity;
     static ɵfac: i0.ɵɵFactoryDeclaration<FirestoreDataProviderService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<FirestoreDataProviderService>;
 }
